@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hcare.mapper.SleepdataMapper">
+    
+    <resultMap type="Sleepdata" id="SleepdataResult">
+        <result property="hcDataid"    column="hc_DataID"    />
+        <result property="hcUserid"    column="hc_UserID"    />
+        <result property="hcStarttime"    column="hc_StartTime"    />
+        <result property="hcEndtime"    column="hc_EndTime"    />
+        <result property="hcQualityscore"    column="hc_QualityScore"    />
+    </resultMap>
+
+    <sql id="selectSleepdataVo">
+        select hc_DataID, hc_UserID, hc_StartTime, hc_EndTime, hc_QualityScore from sleepdata
+    </sql>
+
+    <select id="selectSleepdataList" parameterType="Sleepdata" resultMap="SleepdataResult">
+        <include refid="selectSleepdataVo"/>
+        <where>  
+            <if test="hcUserid != null "> and hc_UserID = #{hcUserid}</if>
+            <if test="hcStarttime != null  and hcStarttime != ''"> and hc_StartTime = #{hcStarttime}</if>
+            <if test="hcEndtime != null  and hcEndtime != ''"> and hc_EndTime = #{hcEndtime}</if>
+            <if test="hcQualityscore != null "> and hc_QualityScore = #{hcQualityscore}</if>
+        </where>
+    </select>
+    
+    <select id="selectSleepdataByHcDataid" parameterType="Long" resultMap="SleepdataResult">
+        <include refid="selectSleepdataVo"/>
+        where hc_DataID = #{hcDataid}
+    </select>
+        
+    <insert id="insertSleepdata" parameterType="Sleepdata" useGeneratedKeys="true" keyProperty="hcDataid">
+        insert into sleepdata
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hcUserid != null">hc_UserID,</if>
+            <if test="hcStarttime != null and hcStarttime != ''">hc_StartTime,</if>
+            <if test="hcEndtime != null and hcEndtime != ''">hc_EndTime,</if>
+            <if test="hcQualityscore != null">hc_QualityScore,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hcUserid != null">#{hcUserid},</if>
+            <if test="hcStarttime != null and hcStarttime != ''">#{hcStarttime},</if>
+            <if test="hcEndtime != null and hcEndtime != ''">#{hcEndtime},</if>
+            <if test="hcQualityscore != null">#{hcQualityscore},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSleepdata" parameterType="Sleepdata">
+        update sleepdata
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="hcUserid != null">hc_UserID = #{hcUserid},</if>
+            <if test="hcStarttime != null and hcStarttime != ''">hc_StartTime = #{hcStarttime},</if>
+            <if test="hcEndtime != null and hcEndtime != ''">hc_EndTime = #{hcEndtime},</if>
+            <if test="hcQualityscore != null">hc_QualityScore = #{hcQualityscore},</if>
+        </trim>
+        where hc_DataID = #{hcDataid}
+    </update>
+
+    <delete id="deleteSleepdataByHcDataid" parameterType="Long">
+        delete from sleepdata where hc_DataID = #{hcDataid}
+    </delete>
+
+    <delete id="deleteSleepdataByHcDataids" parameterType="String">
+        delete from sleepdata where hc_DataID in 
+        <foreach item="hcDataid" collection="array" open="(" separator="," close=")">
+            #{hcDataid}
+        </foreach>
+    </delete>
+</mapper>

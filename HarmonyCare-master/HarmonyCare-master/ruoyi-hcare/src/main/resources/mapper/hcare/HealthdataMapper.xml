@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hcare.mapper.HealthdataMapper">
+    
+    <resultMap type="Healthdata" id="HealthdataResult">
+        <result property="hcDataid"    column="hc_DataID"    />
+        <result property="hcUserid"    column="hc_UserID"    />
+        <result property="hcSteps"    column="hc_Steps"    />
+        <result property="hcHeartrate"    column="hc_HeartRate"    />
+        <result property="hcBloodoxygen"    column="hc_BloodOxygen"    />
+        <result property="hcTimestamp"    column="hc_Timestamp"    />
+    </resultMap>
+
+    <sql id="selectHealthdataVo">
+        select hc_DataID, hc_UserID, hc_Steps, hc_HeartRate, hc_BloodOxygen, hc_Timestamp from healthdata
+    </sql>
+
+    <select id="selectHealthdataList" parameterType="Healthdata" resultMap="HealthdataResult">
+        <include refid="selectHealthdataVo"/>
+        <where>  
+            <if test="hcUserid != null "> and hc_UserID = #{hcUserid}</if>
+            <if test="hcSteps != null "> and hc_Steps = #{hcSteps}</if>
+            <if test="hcHeartrate != null "> and hc_HeartRate = #{hcHeartrate}</if>
+            <if test="hcBloodoxygen != null "> and hc_BloodOxygen = #{hcBloodoxygen}</if>
+            <if test="hcTimestamp != null  and hcTimestamp != ''"> and hc_Timestamp = #{hcTimestamp}</if>
+        </where>
+    </select>
+    
+    <select id="selectHealthdataByHcDataid" parameterType="Long" resultMap="HealthdataResult">
+        <include refid="selectHealthdataVo"/>
+        where hc_DataID = #{hcDataid}
+    </select>
+        
+    <insert id="insertHealthdata" parameterType="Healthdata" useGeneratedKeys="true" keyProperty="hcDataid">
+        insert into healthdata
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hcUserid != null">hc_UserID,</if>
+            <if test="hcSteps != null">hc_Steps,</if>
+            <if test="hcHeartrate != null">hc_HeartRate,</if>
+            <if test="hcBloodoxygen != null">hc_BloodOxygen,</if>
+            <if test="hcTimestamp != null">hc_Timestamp,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hcUserid != null">#{hcUserid},</if>
+            <if test="hcSteps != null">#{hcSteps},</if>
+            <if test="hcHeartrate != null">#{hcHeartrate},</if>
+            <if test="hcBloodoxygen != null">#{hcBloodoxygen},</if>
+            <if test="hcTimestamp != null">#{hcTimestamp},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHealthdata" parameterType="Healthdata">
+        update healthdata
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="hcUserid != null">hc_UserID = #{hcUserid},</if>
+            <if test="hcSteps != null">hc_Steps = #{hcSteps},</if>
+            <if test="hcHeartrate != null">hc_HeartRate = #{hcHeartrate},</if>
+            <if test="hcBloodoxygen != null">hc_BloodOxygen = #{hcBloodoxygen},</if>
+            <if test="hcTimestamp != null">hc_Timestamp = #{hcTimestamp},</if>
+        </trim>
+        where hc_DataID = #{hcDataid}
+    </update>
+
+    <delete id="deleteHealthdataByHcDataid" parameterType="Long">
+        delete from healthdata where hc_DataID = #{hcDataid}
+    </delete>
+
+    <delete id="deleteHealthdataByHcDataids" parameterType="String">
+        delete from healthdata where hc_DataID in 
+        <foreach item="hcDataid" collection="array" open="(" separator="," close=")">
+            #{hcDataid}
+        </foreach>
+    </delete>
+</mapper>

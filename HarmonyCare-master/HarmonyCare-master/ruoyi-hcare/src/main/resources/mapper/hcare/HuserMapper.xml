@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hcare.mapper.HuserMapper">
+    
+    <resultMap type="Huser" id="HuserResult">
+        <result property="hcUserid"    column="hc_UserID"    />
+        <result property="hcUsername"    column="hc_Username"    />
+        <result property="hcPassword"    column="hc_Password"    />
+        <result property="hcName"    column="hc_Name"    />
+        <result property="hcAge"    column="hc_Age"    />
+        <result property="hcGender"    column="hc_Gender"    />
+        <result property="hcPhone"    column="hc_Phone"    />
+        <result property="hcRole"    column="hc_Role"    />
+        <result property="hcBindingid"    column="hc_BindingID"    />
+    </resultMap>
+
+    <sql id="selectHuserVo">
+        select hc_UserID, hc_Username, hc_Password, hc_Name, hc_Age, hc_Gender, hc_Phone, hc_Role, hc_BindingID from huser
+    </sql>
+
+    <select id="selectHuserList" parameterType="Huser" resultMap="HuserResult">
+        <include refid="selectHuserVo"/>
+        <where>  
+            <if test="hcUsername != null  and hcUsername != ''"> and hc_Username like concat('%', #{hcUsername}, '%')</if>
+            <if test="hcPassword != null  and hcPassword != ''"> and hc_Password = #{hcPassword}</if>
+            <if test="hcName != null  and hcName != ''"> and hc_Name like concat('%', #{hcName}, '%')</if>
+            <if test="hcAge != null "> and hc_Age = #{hcAge}</if>
+            <if test="hcGender != null  and hcGender != ''"> and hc_Gender = #{hcGender}</if>
+            <if test="hcPhone != null  and hcPhone != ''"> and hc_Phone = #{hcPhone}</if>
+            <if test="hcRole != null  and hcRole != ''"> and hc_Role = #{hcRole}</if>
+            <if test="hcBindingid != null "> and hc_BindingID = #{hcBindingid}</if>
+        </where>
+    </select>
+    
+    <select id="selectHuserByHcUserid" parameterType="Long" resultMap="HuserResult">
+        <include refid="selectHuserVo"/>
+        where hc_UserID = #{hcUserid}
+    </select>
+        
+    <insert id="insertHuser" parameterType="Huser" useGeneratedKeys="true" keyProperty="hcUserid">
+        insert into huser
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hcUsername != null and hcUsername != ''">hc_Username,</if>
+            <if test="hcPassword != null and hcPassword != ''">hc_Password,</if>
+            <if test="hcName != null and hcName != ''">hc_Name,</if>
+            <if test="hcAge != null">hc_Age,</if>
+            <if test="hcGender != null">hc_Gender,</if>
+            <if test="hcPhone != null">hc_Phone,</if>
+            <if test="hcRole != null">hc_Role,</if>
+            <if test="hcBindingid != null">hc_BindingID,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hcUsername != null and hcUsername != ''">#{hcUsername},</if>
+            <if test="hcPassword != null and hcPassword != ''">#{hcPassword},</if>
+            <if test="hcName != null and hcName != ''">#{hcName},</if>
+            <if test="hcAge != null">#{hcAge},</if>
+            <if test="hcGender != null">#{hcGender},</if>
+            <if test="hcPhone != null">#{hcPhone},</if>
+            <if test="hcRole != null">#{hcRole},</if>
+            <if test="hcBindingid != null">#{hcBindingid},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHuser" parameterType="Huser">
+        update huser
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="hcUsername != null and hcUsername != ''">hc_Username = #{hcUsername},</if>
+            <if test="hcPassword != null and hcPassword != ''">hc_Password = #{hcPassword},</if>
+            <if test="hcName != null and hcName != ''">hc_Name = #{hcName},</if>
+            <if test="hcAge != null">hc_Age = #{hcAge},</if>
+            <if test="hcGender != null">hc_Gender = #{hcGender},</if>
+            <if test="hcPhone != null">hc_Phone = #{hcPhone},</if>
+            <if test="hcRole != null">hc_Role = #{hcRole},</if>
+            <if test="hcBindingid != null">hc_BindingID = #{hcBindingid},</if>
+        </trim>
+        where hc_UserID = #{hcUserid}
+    </update>
+
+    <delete id="deleteHuserByHcUserid" parameterType="Long">
+        delete from huser where hc_UserID = #{hcUserid}
+    </delete>
+
+    <delete id="deleteHuserByHcUserids" parameterType="String">
+        delete from huser where hc_UserID in 
+        <foreach item="hcUserid" collection="array" open="(" separator="," close=")">
+            #{hcUserid}
+        </foreach>
+    </delete>
+</mapper>

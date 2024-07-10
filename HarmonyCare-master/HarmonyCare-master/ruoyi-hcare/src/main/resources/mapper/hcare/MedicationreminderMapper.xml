@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hcare.mapper.MedicationreminderMapper">
+    
+    <resultMap type="Medicationreminder" id="MedicationreminderResult">
+        <result property="hcReminderid"    column="hc_ReminderID"    />
+        <result property="hcUserid"    column="hc_UserID"    />
+        <result property="hcRemindertime"    column="hc_ReminderTime"    />
+        <result property="hcMedicationname"    column="hc_MedicationName"    />
+        <result property="hcDosage"    column="hc_Dosage"    />
+    </resultMap>
+
+    <sql id="selectMedicationreminderVo">
+        select hc_ReminderID, hc_UserID, hc_ReminderTime, hc_MedicationName, hc_Dosage from medicationreminder
+    </sql>
+
+    <select id="selectMedicationreminderList" parameterType="Medicationreminder" resultMap="MedicationreminderResult">
+        <include refid="selectMedicationreminderVo"/>
+        <where>  
+            <if test="hcUserid != null "> and hc_UserID = #{hcUserid}</if>
+            <if test="hcRemindertime != null  and hcRemindertime != ''"> and hc_ReminderTime = #{hcRemindertime}</if>
+            <if test="hcMedicationname != null  and hcMedicationname != ''"> and hc_MedicationName like concat('%', #{hcMedicationname}, '%')</if>
+            <if test="hcDosage != null  and hcDosage != ''"> and hc_Dosage = #{hcDosage}</if>
+        </where>
+    </select>
+    
+    <select id="selectMedicationreminderByHcReminderid" parameterType="Long" resultMap="MedicationreminderResult">
+        <include refid="selectMedicationreminderVo"/>
+        where hc_ReminderID = #{hcReminderid}
+    </select>
+        
+    <insert id="insertMedicationreminder" parameterType="Medicationreminder" useGeneratedKeys="true" keyProperty="hcReminderid">
+        insert into medicationreminder
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hcUserid != null">hc_UserID,</if>
+            <if test="hcRemindertime != null and hcRemindertime != ''">hc_ReminderTime,</if>
+            <if test="hcMedicationname != null and hcMedicationname != ''">hc_MedicationName,</if>
+            <if test="hcDosage != null and hcDosage != ''">hc_Dosage,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hcUserid != null">#{hcUserid},</if>
+            <if test="hcRemindertime != null and hcRemindertime != ''">#{hcRemindertime},</if>
+            <if test="hcMedicationname != null and hcMedicationname != ''">#{hcMedicationname},</if>
+            <if test="hcDosage != null and hcDosage != ''">#{hcDosage},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMedicationreminder" parameterType="Medicationreminder">
+        update medicationreminder
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="hcUserid != null">hc_UserID = #{hcUserid},</if>
+            <if test="hcRemindertime != null and hcRemindertime != ''">hc_ReminderTime = #{hcRemindertime},</if>
+            <if test="hcMedicationname != null and hcMedicationname != ''">hc_MedicationName = #{hcMedicationname},</if>
+            <if test="hcDosage != null and hcDosage != ''">hc_Dosage = #{hcDosage},</if>
+        </trim>
+        where hc_ReminderID = #{hcReminderid}
+    </update>
+
+    <delete id="deleteMedicationreminderByHcReminderid" parameterType="Long">
+        delete from medicationreminder where hc_ReminderID = #{hcReminderid}
+    </delete>
+
+    <delete id="deleteMedicationreminderByHcReminderids" parameterType="String">
+        delete from medicationreminder where hc_ReminderID in 
+        <foreach item="hcReminderid" collection="array" open="(" separator="," close=")">
+            #{hcReminderid}
+        </foreach>
+    </delete>
+</mapper>

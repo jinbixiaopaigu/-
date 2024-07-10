@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hcare.mapper.FalldetectionMapper">
+    
+    <resultMap type="Falldetection" id="FalldetectionResult">
+        <result property="hcDataid"    column="hc_DataID"    />
+        <result property="hcUserid"    column="hc_UserID"    />
+        <result property="hcFalltime"    column="hc_FallTime"    />
+        <result property="hcDetectionresult"    column="hc_DetectionResult"    />
+    </resultMap>
+
+    <sql id="selectFalldetectionVo">
+        select hc_DataID, hc_UserID, hc_FallTime, hc_DetectionResult from falldetection
+    </sql>
+
+    <select id="selectFalldetectionList" parameterType="Falldetection" resultMap="FalldetectionResult">
+        <include refid="selectFalldetectionVo"/>
+        <where>  
+            <if test="hcUserid != null "> and hc_UserID = #{hcUserid}</if>
+            <if test="hcFalltime != null  and hcFalltime != ''"> and hc_FallTime = #{hcFalltime}</if>
+            <if test="hcDetectionresult != null  and hcDetectionresult != ''"> and hc_DetectionResult = #{hcDetectionresult}</if>
+        </where>
+    </select>
+    
+    <select id="selectFalldetectionByHcDataid" parameterType="Long" resultMap="FalldetectionResult">
+        <include refid="selectFalldetectionVo"/>
+        where hc_DataID = #{hcDataid}
+    </select>
+        
+    <insert id="insertFalldetection" parameterType="Falldetection" useGeneratedKeys="true" keyProperty="hcDataid">
+        insert into falldetection
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hcUserid != null">hc_UserID,</if>
+            <if test="hcFalltime != null and hcFalltime != ''">hc_FallTime,</if>
+            <if test="hcDetectionresult != null">hc_DetectionResult,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hcUserid != null">#{hcUserid},</if>
+            <if test="hcFalltime != null and hcFalltime != ''">#{hcFalltime},</if>
+            <if test="hcDetectionresult != null">#{hcDetectionresult},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFalldetection" parameterType="Falldetection">
+        update falldetection
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="hcUserid != null">hc_UserID = #{hcUserid},</if>
+            <if test="hcFalltime != null and hcFalltime != ''">hc_FallTime = #{hcFalltime},</if>
+            <if test="hcDetectionresult != null">hc_DetectionResult = #{hcDetectionresult},</if>
+        </trim>
+        where hc_DataID = #{hcDataid}
+    </update>
+
+    <delete id="deleteFalldetectionByHcDataid" parameterType="Long">
+        delete from falldetection where hc_DataID = #{hcDataid}
+    </delete>
+
+    <delete id="deleteFalldetectionByHcDataids" parameterType="String">
+        delete from falldetection where hc_DataID in 
+        <foreach item="hcDataid" collection="array" open="(" separator="," close=")">
+            #{hcDataid}
+        </foreach>
+    </delete>
+</mapper>

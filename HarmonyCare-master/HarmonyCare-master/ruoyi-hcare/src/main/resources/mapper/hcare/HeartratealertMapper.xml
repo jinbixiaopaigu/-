@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.hcare.mapper.HeartratealertMapper">
+    
+    <resultMap type="Heartratealert" id="HeartratealertResult">
+        <result property="hcDataid"    column="hc_DataID"    />
+        <result property="hcUserid"    column="hc_UserID"    />
+        <result property="hcAlerttime"    column="hc_AlertTime"    />
+        <result property="hcAlerttype"    column="hc_AlertType"    />
+    </resultMap>
+
+    <sql id="selectHeartratealertVo">
+        select hc_DataID, hc_UserID, hc_AlertTime, hc_AlertType from heartratealert
+    </sql>
+
+    <select id="selectHeartratealertList" parameterType="Heartratealert" resultMap="HeartratealertResult">
+        <include refid="selectHeartratealertVo"/>
+        <where>  
+            <if test="hcUserid != null "> and hc_UserID = #{hcUserid}</if>
+            <if test="hcAlerttime != null  and hcAlerttime != ''"> and hc_AlertTime = #{hcAlerttime}</if>
+            <if test="hcAlerttype != null  and hcAlerttype != ''"> and hc_AlertType = #{hcAlerttype}</if>
+        </where>
+    </select>
+    
+    <select id="selectHeartratealertByHcDataid" parameterType="Long" resultMap="HeartratealertResult">
+        <include refid="selectHeartratealertVo"/>
+        where hc_DataID = #{hcDataid}
+    </select>
+        
+    <insert id="insertHeartratealert" parameterType="Heartratealert" useGeneratedKeys="true" keyProperty="hcDataid">
+        insert into heartratealert
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hcUserid != null">hc_UserID,</if>
+            <if test="hcAlerttime != null and hcAlerttime != ''">hc_AlertTime,</if>
+            <if test="hcAlerttype != null">hc_AlertType,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="hcUserid != null">#{hcUserid},</if>
+            <if test="hcAlerttime != null and hcAlerttime != ''">#{hcAlerttime},</if>
+            <if test="hcAlerttype != null">#{hcAlerttype},</if>
+         </trim>
+    </insert>
+
+    <update id="updateHeartratealert" parameterType="Heartratealert">
+        update heartratealert
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="hcUserid != null">hc_UserID = #{hcUserid},</if>
+            <if test="hcAlerttime != null and hcAlerttime != ''">hc_AlertTime = #{hcAlerttime},</if>
+            <if test="hcAlerttype != null">hc_AlertType = #{hcAlerttype},</if>
+        </trim>
+        where hc_DataID = #{hcDataid}
+    </update>
+
+    <delete id="deleteHeartratealertByHcDataid" parameterType="Long">
+        delete from heartratealert where hc_DataID = #{hcDataid}
+    </delete>
+
+    <delete id="deleteHeartratealertByHcDataids" parameterType="String">
+        delete from heartratealert where hc_DataID in 
+        <foreach item="hcDataid" collection="array" open="(" separator="," close=")">
+            #{hcDataid}
+        </foreach>
+    </delete>
+</mapper>
